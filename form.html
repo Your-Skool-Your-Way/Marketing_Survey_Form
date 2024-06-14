@@ -15,7 +15,7 @@
         <div class="form-wrapper">
             <div class="form-section">
                 <div class="form-group">
-                    <label for="formNo">Form No: 1</label>
+                    <label id="formNoLabel">Form No: 1</label>
                 </div>
                 <div class="form-group">
                     <label id="dateLabel">Date:</label>
@@ -38,10 +38,10 @@
                     <label for="dob">Date of Birth:</label>
                     <input type="date" id="dob" name="dob">
                 </div>
-                <div class="form-group1">
+                <!-- <div class="form-group1">
                     <label for="studentEmail">Student's Email:</label>
                     <input type="email" id="studentEmail" name="studentEmail">
-                </div>
+                </div> -->
                 <div class="form-group1">
                     <label for="school">School:</label>
                     <input type="text" id="school" name="school">
@@ -83,11 +83,11 @@
                 <button type="button" class="accordion">Course Enrolment</button>
                 <div class="accordion-content">
                     <div class="form-group-checkbox">
-                        <input type="checkbox" id="dambaruuApp" name="course" value="DambaruuApp">
+                        <input type="checkbox" id="dambaruuApp" name="course" >
                         <label for="dambaruuApp">Dambaruu app</label>
                     </div>
                     <div class="form-group-checkbox">
-                        <input type="checkbox" id="homeLearningKit" name="course" value="HomeLearningKit">
+                        <input type="checkbox" id="homeLearningKit" name="course">
                         <label for="homeLearningKit">Home Learning Kit</label>
                     </div>
                 </div>
@@ -145,8 +145,9 @@
                 <div class="form-section">
                     <div class="form-group">
                         <label for="photoUpload">Upload Photo:</label>
-                        <input type="file" id="photoUpload" name="photoUpload" accept="image/*" capture="camera">
+                        <input type="file" id="photoUpload" name="photoUpload" accept="image/*" capture="camera" onchange="displayImage(event)">
                     </div>
+                    
                     <div class="form-group">
                         <label for="aadhaarUpload">Upload Aadhaar:</label>
                         <input type="file" id="aadhaarUpload" name="aadhaarUpload" accept="application/pdf,image/*">
@@ -181,20 +182,23 @@
             </div>
         </div>
 
-        <!-- Declaration -->
-        <button type="button" style="width:20rem;height: 2rem;border: none; background-color:#00796b;">Declaration</button>
-        <div class="declaration">
-            <p>I, <input type="text" id="parentNameInput" class="declaration-field">, hereby give my consent to my child of Class <input type="text" id="classInput" class="declaration-field"> to participate in the DAMBARUU's online Home Learning program for the duration of <input type="text" class="declaration-field" id="durationInput"> year/(s). I have reviewed and agree to the terms of the service, privacy policy, payment terms, and any other relevant policies of DAMBARUU.</p>
-        </div>
+      <!-- Declaration -->
+      <button type="button" style="width:20rem;height: 2rem;border: none; background-color:#00796b;">Declaration</button>
+<div class="declaration">
+    <input type="checkbox" id="declarationCheckbox">
+    <label for="declarationCheckbox">I have reviewed and agreed to the terms of the service, privacy policy, payment terms, and any other relevant policies of Dambaruu.</label>
+</div>
 
-        <!-- Submit Button -->
-        <div class="form-group">
-            <button type="button" onclick="submitForm()" style="width:20rem;height: 3rem; background-color:#00796b;">Submit</button>
-        </div>
+<!-- Submit Button -->
+<div class="form-group">
+    <button type="button" id="submitButton" onclick="submitForm()" disabled style="width:20rem;height: 3rem; background-color: white;">Submit</button>
+</div>
     </div>
     <script src="form.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <script>
+
+        
         // Initialize signature pads
         var parentSignaturePad = new SignaturePad(document.getElementById('parentSignature'));
         var bdeSignaturePad = new SignaturePad(document.getElementById('bdeSignature'));
@@ -219,10 +223,11 @@
         }
 
         function submitForm() {
+            incrementFormNumber()
             var formData = new FormData();
             formData.append('student_name', document.getElementById('studentName').value);
             formData.append('student_dob ', document.getElementById('dob').value);
-            formData.append('student_email', document.getElementById('studentEmail').value);
+            // formData.append('student_email', document.getElementById('studentEmail').value);
             formData.append('student_school', document.getElementById('school').value);
             formData.append('student_board', document.getElementById('board').value);
             formData.append('student_mobile', document.getElementById('mobile').value);
@@ -232,9 +237,13 @@
             formData.append('address ', document.getElementById('address').value);
 
             // Collecting checkbox values
-            var courses = document.querySelectorAll('input[name="course"]:checked');
+            var courses = document.querySelectorAll('input[id="dambaruuApp"]');
             courses.forEach((course) => {
-                formData.append('course', course.value);
+                formData.append('dambaruu_app', course.value);
+            });
+            var courses = document.querySelectorAll('input[id="homeLearningKit"]');
+            courses.forEach((course) => {
+                formData.append('home_learning_kit', course.value);
             });
 
              // Append selected radio for class
@@ -263,7 +272,7 @@
             // formData.append('durationInput', document.getElementById('durationInput').value);
 
             // Send the form data to the endpoint
-            fetch('http://192.168.0.116:8000/booking/', {
+            fetch('http://192.168.0.122:8000/user/marketingsurvey', {
                 method: 'POST',
                 body: formData
             })
@@ -275,6 +284,12 @@
                 console.error('Error:', error);
             });
         }
+
+        function displayImage(event) {
+    var image = document.getElementById('uploadedImage');
+    image.src = URL.createObjectURL(event.target.files[0]);
+}
+
     </script>
 </body>
 </html>

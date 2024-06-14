@@ -29,8 +29,9 @@ function setDate() {
 // Call the setDate function when the page loads
 window.onload = setDate;
 
-// Function to display the uploaded image
-function displayImage(event) {
+
+ // Function to display the uploaded image
+ function displayImage(event) {
     const input = event.target;
     if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -41,7 +42,29 @@ function displayImage(event) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize form number
+    let formNumber = localStorage.getItem('formNumber') || 1;
+    document.getElementById('formNoLabel').textContent = 'Form No: ' + formNumber;
 
+    // Initialize current date
+    let currentDate = new Date().toLocaleDateString();
+    document.getElementById('dateLabel').textContent = 'Date: ' + currentDate;
+});
+
+function incrementFormNumber() {
+    // Get current form number from localStorage
+    let formNumber = parseInt(localStorage.getItem('formNumber')) || 1;
+
+    // Increment form number
+    formNumber += 1;
+
+    // Update form number in localStorage
+    localStorage.setItem('formNumber', formNumber);
+
+    // Update form number display
+    document.getElementById('formNoLabel').textContent = 'Form No: ' + formNumber;
+}
 
  // Function to clear the canvas
  function clearCanvas(canvasId) {
@@ -71,3 +94,24 @@ function uploadSignature(canvasId, fileInputId) {
             alert('Signature uploaded successfully');
         });
 }
+document.addEventListener('DOMContentLoaded', function() {
+    var declarationCheckbox = document.getElementById('declarationCheckbox');
+    var submitButton = document.getElementById('submitButton');
+
+    // Function to update the submit button state
+    function updateSubmitButtonState() {
+        if (declarationCheckbox.checked) {
+            submitButton.style.backgroundColor = '#00796b'; // Green color
+            submitButton.disabled = false;
+        } else {
+            submitButton.style.backgroundColor = 'white'; // Initial color
+            submitButton.disabled = true;
+        }
+    }
+
+    // Add event listener to the checkbox
+    declarationCheckbox.addEventListener('change', updateSubmitButtonState);
+
+    // Initial call to set the correct state
+    updateSubmitButtonState();
+});
