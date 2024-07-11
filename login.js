@@ -22,7 +22,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     .then(response => {
         console.log("response",response);
         if (response.ok){
-            window.location.href = 'index.html';
+            window.location.href = 'form.html';
         }
         else[
             alert("login failed")
